@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="829.0" prefWidth="1165.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.InventoryListSceneController">
+   <children>
+      <SplitPane dividerPositions="0.09310761789600967, 0.20556227327690446, 0.7896009673518742, 0.8935912938331319" orientation="VERTICAL" prefHeight="829.0" prefWidth="1165.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="243.0" prefWidth="1163.0">
+               <children>
+                  <Label layoutX="427.0" layoutY="7.0" text="Inventory Manager">
+                     <font>
+                        <Font size="37.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="115.0" prefWidth="1163.0">
+               <children>
+                  <TextField fx:id="addInputName" layoutX="14.0" layoutY="38.0" prefHeight="31.0" prefWidth="522.0" promptText="Enter Item Name:" />
+                  <TextField fx:id="addInputPrice" layoutX="552.0" layoutY="38.0" prefHeight="31.0" prefWidth="233.0" promptText="Enter Item Price:" />
+                  <TextField fx:id="addInputSerial" layoutX="798.0" layoutY="38.0" prefHeight="31.0" prefWidth="233.0" promptText="Enter Serial Number (A-XXX-XXX-XXX):" />
+                  <Button fx:id="addItemButton" layoutX="1043.0" layoutY="38.0" mnemonicParsing="false" onAction="#addItemPressed" prefHeight="31.0" prefWidth="106.0" text="Add Item" />
+                  <Label alignment="TOP_CENTER" layoutX="473.0" layoutY="-1.0" prefHeight="30.0" prefWidth="218.0" text="Add Item To Inventory">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutX="-2.0" layoutY="29.0" prefHeight="449.0" prefWidth="1164.0">
+                    <columns>
+                        <TableColumn fx:id="nameColumn" prefWidth="601.0" text="Item Name" />
+                      <TableColumn fx:id="priceColumn" prefWidth="276.0" text="Price Per Unit" />
+                      <TableColumn fx:id="serialColumn" minWidth="0.0" prefWidth="286.0" text="Serial Number" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="540.0" layoutY="-1.0" text="Inventory">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="72.0" prefWidth="1163.0">
+               <children>
+                  <TextField fx:id="searchInput" layoutX="307.0" layoutY="38.0" prefHeight="31.0" prefWidth="381.0" promptText="Enter Item Name or Serial Number (A-XXX-XXX-XXX):" />
+                  <Label alignment="TOP_CENTER" layoutX="453.0" layoutY="-1.0" prefHeight="30.0" prefWidth="257.0" text="Search Item In Inventory">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="searchItemButton" layoutX="710.0" layoutY="38.0" mnemonicParsing="false" onAction="#searchItemPressed" prefHeight="31.0" prefWidth="143.0" text="Search Item" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="272.0" prefWidth="1163.0">
+               <children>
+                  <Button fx:id="editItemButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#editItemPressed" prefHeight="30.0" prefWidth="193.0" text="Edit Item">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="deleteItemButton" layoutX="253.0" layoutY="47.0" mnemonicParsing="false" onAction="#deleteItemPressed" prefHeight="30.0" prefWidth="193.0" text="Delete Item">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="deleteInventoryButton" layoutX="485.0" layoutY="47.0" mnemonicParsing="false" onAction="#deleteInventoryPressed" prefHeight="30.0" prefWidth="193.0" text="Delete Inventory">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="saveInventoryButton" layoutX="721.0" layoutY="47.0" mnemonicParsing="false" onAction="#saveInventoryPressed" prefHeight="30.0" prefWidth="193.0" text="Save Inventory">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="loadInventoryButton" layoutX="956.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadInventoryPressed" prefHeight="30.0" prefWidth="193.0" text="Load Inventory">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Label alignment="CENTER" layoutX="539.0" layoutY="7.0" prefHeight="30.0" prefWidth="86.0" text="Options">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
