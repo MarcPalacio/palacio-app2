@@ -7,24 +7,46 @@ package baseline;
 
 import javafx.collections.ObservableList;
 import java.io.File;
+import java.util.regex.Pattern;
+
 
 public class ListOfItems {
-    public String addItemToList(ObservableList<Item> list, String name, double price, String serial){
+    public String addItemToList(ObservableList<Item> list, String name, String price, String serial){
         //  Returns a string depending on if an item is added to the list or not
+        StringBuilder output = new StringBuilder();
+
         //  If the list is full
-        //      Return a string that says the list is full
-        //  If the item is already in the list
-        //      Return a string that says that the item already exists
+        if(list.size() >= 1024){
+            //  Return a string that says the list is full
+            output.append("The inventory is full. ");
+        }
+
+        //  If the item is already in the list (This is based off serial number)
+        else if(doesAlreadyExist(list, serial)){
+            //  Return a string that says that the item already exists
+            output.append("This item already exists in the inventory. ");
+        }
+
         //  If the name is invalid
-        //      Return that the name is invalid
-        //  If the price is invalid
-        //      Return that the price is invalid
+        else if(name.length() < 2 || name.length() > 256){
+            //  Return that the name is invalid
+            output.append("The name is invalid. ");
+        }
+
         //  If the serial is invalid
-        //      Return that the serial invalid
+        else if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
+            //  Return that the serial invalid
+            output.append("The serial number is invalid. ");
+        }
+
         //  Else
-        //      Add the item to the list
+        else{
+            //  Add the item to the list
+            list.add(new Item(name, price, serial));
+        }
+
         //  Return the output string
-        return "";
+        return output.toString();
     }
 
     public String editItemInList(Item editItem, String name, double price, String serial){
@@ -43,10 +65,12 @@ public class ListOfItems {
 
     public void deleteItemInList(ObservableList<Item> list, int index){
         //  Deletes selected items in the list
+        list.remove(list.get(index));
     }
 
     public void deleteAllItems(ObservableList<Item> list){
         //  Just clears list
+        list.clear();
     }
 
     public ObservableList<Item> searchItems(ObservableList<Item> list, String search){
@@ -82,5 +106,14 @@ public class ListOfItems {
     public String writeSaveFileJSON(ObservableList<Item> list){
         //  Takes each item and creates a JSON string
         return "";
+    }
+
+    private boolean doesAlreadyExist(ObservableList<Item> list, String serial){
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).getSerial().equals(serial)){
+                return true;
+            }
+        }
+        return false;
     }
 }

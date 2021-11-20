@@ -7,9 +7,11 @@ package baseline;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 public class ErrorMessageSceneController {
     //  FXML Elements
@@ -23,20 +25,25 @@ public class ErrorMessageSceneController {
     @FXML
     void setInventoryScene(Scene scene){
         //  Sets the inventory scene
+        inventoryScene = scene;
     }
 
     @FXML
     void goInventoryScene(ActionEvent event){
         //  Switches scene to inventory scene
+        Stage primaryStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        primaryStage.setScene(inventoryScene);
     }
 
     //  FXML Events
     @FXML
     void goBackButtonPressed(ActionEvent event) {
         //  Goes back to the inventory scene after the user sees the error
+        goInventoryScene(event);
     }
 
     void setLabelError(String error){
         //  Sets the label to print the specific error
+        labelError.setText(error);
     }
 }

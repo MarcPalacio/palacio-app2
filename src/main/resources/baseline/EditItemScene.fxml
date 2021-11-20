@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="95.0" prefWidth="1169.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.EditItemSceneController">
+<AnchorPane prefHeight="95.0" prefWidth="1287.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.EditItemSceneController">
    <children>
       <Label layoutX="545.0" layoutY="-1.0" text="Edit Item">
          <font>
@@ -18,5 +17,6 @@
       <TextField fx:id="editInputPrice" layoutX="551.0" layoutY="36.0" prefHeight="31.0" prefWidth="233.0" promptText="Enter Item Price:" />
       <TextField fx:id="editInputSerial" layoutX="802.0" layoutY="36.0" prefHeight="31.0" prefWidth="233.0" promptText="Enter Serial Number (A-XXX-XXX-XXX):" />
       <Button fx:id="editItemButton" layoutX="1049.0" layoutY="36.0" mnemonicParsing="false" onAction="#editItemButtonPressed" prefHeight="31.0" prefWidth="106.0" text="Edit Item" />
+      <Button fx:id="cancelEditButton" layoutX="1167.0" layoutY="36.0" mnemonicParsing="false" onAction="#cancelEditButtonPressed" prefHeight="31.0" prefWidth="106.0" text="Cancel Edit" />
    </children>
 </AnchorPane>

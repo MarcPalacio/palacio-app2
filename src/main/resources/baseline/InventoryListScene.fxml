@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="829.0" prefWidth="1165.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="baseline.InventoryListSceneController">
    <children>
       <SplitPane dividerPositions="0.09310761789600967, 0.20556227327690446, 0.7896009673518742, 0.8935912938331319" orientation="VERTICAL" prefHeight="829.0" prefWidth="1165.0">
@@ -38,7 +37,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="-2.0" layoutY="29.0" prefHeight="449.0" prefWidth="1164.0">
+                  <TableView fx:id="inventoryTable" layoutX="-2.0" layoutY="29.0" prefHeight="449.0" prefWidth="1164.0">
                     <columns>
                         <TableColumn fx:id="nameColumn" prefWidth="601.0" text="Item Name" />
                       <TableColumn fx:id="priceColumn" prefWidth="276.0" text="Price Per Unit" />
