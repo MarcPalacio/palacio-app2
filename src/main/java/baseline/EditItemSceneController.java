@@ -30,6 +30,7 @@ public class EditItemSceneController {
     private Scene inventoryScene;
     private Scene errorScene;
     private FXMLLoader inventoryController;
+    private FXMLLoader errorController;
 
     //  Methods to set and go to scenes
     @FXML
@@ -59,25 +60,58 @@ public class EditItemSceneController {
     }
 
     @FXML
+    void getErrorController(FXMLLoader errorController){
+        //  Gets the error message scene controller
+        this.errorController = errorController;
+    }
+
+    @FXML
     void getInventoryController(FXMLLoader inventoryController){
+        //  Gets the inventory list scene controller
         this.inventoryController = inventoryController;
     }
 
     //  FXML Events
     @FXML
     void cancelEditButtonPressed(ActionEvent event) {
+        //  Goes back to the inventory scene without making any changes
         goInventoryScene(event);
     }
 
     @FXML
     void editItemButtonPressed(ActionEvent event) {
-        //  Creates an instance of ListOfItems and inventoryController to use
-        //  Gets the data from the input fields (Name, price, and serial)
-        //  If editItem from ListOfItems returns a string, the edit failed and will change to an error screen
-        //  Else, it was successful and will update the list
+        //  Calls an instance of ListOfItems to utilize functions within that method
+        ListOfItems helper = new ListOfItems();
+        //  Gets the controller information of the error message scene in case the user makes an error
+        ErrorMessageSceneController error = errorController.getController();
+        //  Create the output string
+        StringBuilder errorMessage = new StringBuilder();
+
+        //  Gets the information from each of the input fields and passes them to a function within ListOfItems
+        String name = editInputName.getText();
+        String price = editInputPrice.getText();
+        String serial = editInputSerial.getText();
+
+        errorMessage.append(helper.editItemInList(inventoryList.get(index), name, price, serial));
+
+        //  Checks if a string was returned
+        //  If the string isn't empty
+        if(!(errorMessage.toString().isEmpty())){
+            //  An item wasn't edited properly and an error message will show with the corresponding error
+            errorMessage.append("Please validate your inputs.");
+            error.setLabelError(errorMessage.toString());
+            goErrorScene(event);
+        }
+        else{   //  If a string wasn't returned
+            //  An item was edited in the list successfully and the list will update
+            editInputName.clear();
+            editInputPrice.clear();
+            editInputSerial.clear();
+            goInventoryScene(event);
+        }
     }
 
-    //  Other methods to help
+    //  Setter methods to get information from other controllers
     void setTextInputs(String name, String price, String serial){
         //  Sets the text inputs to the previous description
         editInputName.setText(name);

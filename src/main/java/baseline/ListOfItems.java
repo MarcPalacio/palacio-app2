@@ -5,8 +5,10 @@
 
 package baseline;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 
 
@@ -14,53 +16,101 @@ public class ListOfItems {
     public String addItemToList(ObservableList<Item> list, String name, String price, String serial){
         //  Returns a string depending on if an item is added to the list or not
         StringBuilder output = new StringBuilder();
-
+        DecimalFormat df = new DecimalFormat("0.00");
+        String priceString = "";
+        
         //  If the list is full
         if(list.size() >= 1024){
             //  Return a string that says the list is full
-            output.append("The inventory is full. ");
+            output.append("The inventory is full. Please delete an item from the list. ");
         }
 
         //  If the item is already in the list (This is based off serial number)
-        else if(doesAlreadyExist(list, serial)){
+        if(doesAlreadyExist(list, serial)){
             //  Return a string that says that the item already exists
-            output.append("This item already exists in the inventory. ");
+            output.append("This item already exists in the inventory. Please enter a new serial number. ");
+        }
+
+        //  If the item's price is invalid (Either less than 0 or contains characters)
+        try{
+            double priceDouble = Double.parseDouble(price);
+            if(priceDouble < 0){
+                //  Return a string that says the item's price is less than 0
+                output.append("Invalid price for money. Please ensure that the price is above 0. ");
+            } else {
+                //  Converts the price to a string with the dollar sign
+                priceString = "$" + df.format(priceDouble);
+            }
+        } catch(NumberFormatException a){
+            //  Returns a string that says the item's price contains letters (which it shouldn't)
+            output.append("Invalid format for money. Please ensure that there is only digits and decimals when necessary. ");
         }
 
         //  If the name is invalid
-        else if(name.length() < 2 || name.length() > 256){
+        if(name.length() < 2 || name.length() > 256){
             //  Return that the name is invalid
-            output.append("The name is invalid. ");
+            output.append("The name is invalid. Please ensure that the length is between 2-256 characters. ");
         }
 
         //  If the serial is invalid
-        else if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
+        if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
             //  Return that the serial invalid
-            output.append("The serial number is invalid. ");
+            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. ");
         }
 
         //  Else
-        else{
+        if(output.isEmpty()){
             //  Add the item to the list
-            list.add(new Item(name, price, serial));
+            list.add(new Item(name, priceString, serial));
         }
 
         //  Return the output string
         return output.toString();
     }
 
-    public String editItemInList(Item editItem, String name, double price, String serial){
+    public String editItemInList(Item editItem, String name, String price, String serial){
+        StringBuilder output = new StringBuilder();
+        DecimalFormat df = new DecimalFormat("0.00");
+        String priceString = "";
         //  Returns a string depending on if an item is edited or not
+
+        //  If the item's price is invalid (Either less than 0 or contains characters)
+        try{
+            double priceDouble = Double.parseDouble(price);
+            if(priceDouble < 0){
+                //  Return a string that says the item's price is less than 0
+                output.append("Invalid price for money. Please ensure that the price is above 0. ");
+            } else {
+                //  Converts the price to a string with the dollar sign
+                priceString = "$" + df.format(priceDouble);
+            }
+        } catch(NumberFormatException a){
+            //  Returns a string that says the item's price contains letters (which it shouldn't)
+            output.append("Invalid format for money. Please ensure that there is only digits and decimals when necessary. ");
+        }
+
         //  If the name is invalid
-        //      Return that the name is invalid
-        //  If the price is invalid
-        //      Return that the price is invalid
+        if(name.length() < 2 || name.length() > 256){
+            //  Return that the name is invalid
+            output.append("The name is invalid. Please ensure that the length is between 2-256 characters. ");
+        }
+
         //  If the serial is invalid
-        //      Return that the serial invalid
+        if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
+            //  Return that the serial invalid
+            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. ");
+        }
+
         //  Else
-        //      Edit item using setters and getters
+        if(output.isEmpty()){
+            //  Edit the items using setters and getters
+            editItem.setName(name);
+            editItem.setPrice(priceString);
+            editItem.setSerial(serial);
+        }
+
         //  Return the output string
-        return "";
+        return output.toString();
     }
 
     public void deleteItemInList(ObservableList<Item> list, int index){
@@ -74,10 +124,20 @@ public class ListOfItems {
     }
 
     public ObservableList<Item> searchItems(ObservableList<Item> list, String search){
-        //  Checks which format the string is in (Serial or not serial)
-        //  If it is in the format of serial number, then it will only search the serial numbers
-        //  Else, it will only search the names of the items
-        return list;
+        ObservableList<Item> filteredList = FXCollections.observableArrayList();
+
+        for(int i = 0; i < list.size(); i++){
+            String name = list.get(i).getName();
+            String serial = list.get(i).getSerial();
+
+            //  This if statement will ignore the case values
+            if(Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE).matcher(name).find() ||
+                    Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE).matcher(serial).find()){
+                filteredList.add(list.get(i));
+            }
+        }
+
+        return filteredList;
     }
 
     public void saveListFile(ObservableList<Item> list, File outputFile){
@@ -109,11 +169,15 @@ public class ListOfItems {
     }
 
     private boolean doesAlreadyExist(ObservableList<Item> list, String serial){
+        //  Goes through each element of the list and checks the serial
         for(int i = 0; i < list.size(); i++){
+            //  If the serial does much, it will return true
             if(list.get(i).getSerial().equals(serial)){
                 return true;
             }
         }
+
+        //  Else it will just return false
         return false;
     }
 }

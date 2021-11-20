@@ -37,7 +37,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="inventoryTable" layoutX="-2.0" layoutY="29.0" prefHeight="449.0" prefWidth="1164.0">
+                  <TableView fx:id="inventoryTable" layoutX="-2.0" layoutY="30.0" prefHeight="447.0" prefWidth="1163.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                     <columns>
                         <TableColumn fx:id="nameColumn" prefWidth="601.0" text="Item Name" />
                       <TableColumn fx:id="priceColumn" prefWidth="276.0" text="Price Per Unit" />
@@ -53,13 +53,12 @@
             </AnchorPane>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="72.0" prefWidth="1163.0">
                <children>
-                  <TextField fx:id="searchInput" layoutX="307.0" layoutY="38.0" prefHeight="31.0" prefWidth="381.0" promptText="Enter Item Name or Serial Number (A-XXX-XXX-XXX):" />
+                  <TextField fx:id="searchInput" layoutX="391.0" layoutY="40.0" onKeyPressed="#searchInputUpdate" onKeyTyped="#searchInputUpdate" prefHeight="31.0" prefWidth="381.0" promptText="Enter Item Name or Serial Number (A-XXX-XXX-XXX):" />
                   <Label alignment="TOP_CENTER" layoutX="453.0" layoutY="-1.0" prefHeight="30.0" prefWidth="257.0" text="Search Item In Inventory">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Button fx:id="searchItemButton" layoutX="710.0" layoutY="38.0" mnemonicParsing="false" onAction="#searchItemPressed" prefHeight="31.0" prefWidth="143.0" text="Search Item" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="272.0" prefWidth="1163.0">

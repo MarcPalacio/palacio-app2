@@ -35,17 +35,21 @@ public class InventoryManagementApplication extends Application {
         Scene errorScene = new Scene(errorRoot);
 
         //  Set up controllers as well as allows them to have access to other controllers and scenes
+        //  Inventory scene set up
         InventoryListSceneController inventoryControl = inventoryLoad.getController();
         inventoryControl.getEditController(editLoad);
         inventoryControl.setEditScene(editScene);
         inventoryControl.getErrorController(errorLoad);
         inventoryControl.setErrorScene(errorScene);
 
+        //  Edit scene set up
         EditItemSceneController editControl = editLoad.getController();
         editControl.getInventoryController(inventoryLoad);
         editControl.setInventoryScene(inventoryScene);
+        editControl.getErrorController(errorLoad);
         editControl.setErrorScene(errorScene);
 
+        //  Error scene set up
         ErrorMessageSceneController errorControl = errorLoad.getController();
         errorControl.setInventoryScene(inventoryScene);
 

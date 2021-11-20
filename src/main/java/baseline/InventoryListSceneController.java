@@ -18,10 +18,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class InventoryListSceneController implements Initializable {
@@ -39,7 +39,6 @@ public class InventoryListSceneController implements Initializable {
     @FXML private TableColumn<Item, Double> priceColumn;
     @FXML private Button saveInventoryButton;
     @FXML private TextField searchInput;
-    @FXML private Button searchItemButton;
     @FXML private TableColumn<Item, String> serialColumn;
 
     //  Attributes
@@ -102,45 +101,33 @@ public class InventoryListSceneController implements Initializable {
     void addItemPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+        //  Gets the controller information of the error message scene in case the user makes an error
         ErrorMessageSceneController error = errorController.getController();
-        DecimalFormat df = new DecimalFormat("0.00");
+        //  Creates string to check
         StringBuilder errorMessage = new StringBuilder();
 
         //  Gets the information from each of the input fields and passes them to a function within ListOfItems
-        try{
-            String name = addInputName.getText();
+        String name = addInputName.getText();
+        String price = addInputPrice.getText();
+        String serial = addInputSerial.getText();
 
-            double priceDouble = Double.parseDouble(addInputPrice.getText());
-            if(priceDouble < 0){
-                errorMessage.append("Invalid price for money. ");
-            }
-            String priceString = "$" + df.format(priceDouble);
+        errorMessage.append(helper.addItemToList(inventoryList, name, price, serial));
 
-            String serial = addInputSerial.getText();
-            errorMessage.append(helper.addItemToList(inventoryList, name, priceString, serial));
-
-            //  Checks if a string was returned
-            //  If the string isn't empty
-            if(!(errorMessage.toString().isEmpty())){
-                //  An item wasn't added to the list, and an error message will show with the corresponding error
-                errorMessage.append("Please validate your inputs.");
-                error.setLabelError(errorMessage.toString());
-                goErrorScene(event);
-            }
-            //  If a string wasn't returned
-            else{
-                //  An item was added to the list successfully and the list will update
-                addInputName.clear();
-                addInputPrice.clear();
-                addInputSerial.clear();
-                inventoryTable.refresh();
-            }
-        } catch(NumberFormatException e){
-            //  An error that can be caught here
-            //  Note: NullPointerException would be one, but when it pulls the information from the price
-            //  text input, it actually is an empty string ""
-            error.setLabelError("Invalid input for money. Please input a valid input.");
+        //  Checks if a string was returned
+        //  If the string isn't empty
+        if(!(errorMessage.toString().isEmpty())){
+            //  An item wasn't added to the list, and an error message will show with the corresponding error
+            errorMessage.append("Please validate your inputs.");
+            error.setLabelError(errorMessage.toString());
             goErrorScene(event);
+        }
+        //  If a string wasn't returned
+        else{
+            //  An item was added to the list successfully and the list will update
+            addInputName.clear();
+            addInputPrice.clear();
+            addInputSerial.clear();
+            inventoryTable.refresh();
         }
     }
 
@@ -150,6 +137,7 @@ public class InventoryListSceneController implements Initializable {
         ListOfItems helper = new ListOfItems();
         //  Calls method in ListOfItems to clear list
         helper.deleteAllItems(inventoryList);
+        //  Refreshes the table
         inventoryTable.refresh();
     }
 
@@ -157,12 +145,12 @@ public class InventoryListSceneController implements Initializable {
     void deleteItemPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+        //  Gets the controller information of the error message scene in case the user makes an error
         ErrorMessageSceneController error = errorController.getController();
-        int index;
 
         try{
             //  Gets an index from the selected element in the table
-            index = inventoryList.indexOf(inventoryTable.getSelectionModel().getSelectedItem());
+            int index = inventoryList.indexOf(inventoryTable.getSelectionModel().getSelectedItem());
             //  Calls method in ListOfItems to delete item
             helper.deleteItemInList(inventoryList, index);
             inventoryTable.refresh();
@@ -179,19 +167,40 @@ public class InventoryListSceneController implements Initializable {
         EditItemSceneController edit = editController.getController();
         ErrorMessageSceneController error = errorController.getController();
 
-        //  Gets an index from the selected element in the table
-        int index = inventoryList.indexOf(inventoryTable.getSelectionModel().getSelectedItem());
-
-        // Checks the index to decide where it goes
         try{
+            //  Gets an index from the selected element in the table
+            int index = inventoryList.indexOf(inventoryTable.getSelectionModel().getSelectedItem());
+
             //  Transfers the information to the edit scene screen, where it will handle changing the element in the list
             edit.setTextInputs(inventoryList.get(index).getName(), inventoryList.get(index).getPrice(), inventoryList.get(index).getSerial());
+            edit.setIndex(index);
+            edit.setItemList(inventoryList);
             goEditScene(event);
         } catch(IndexOutOfBoundsException a) {
             //  If the index is invalid, then it will go to the error screen where it shows the corresponding error
             error.setLabelError("Please ensure you are selecting an element in the inventory.");
             goErrorScene(event);
         }
+
+        //  Refreshes the table
+        inventoryTable.refresh();
+    }
+
+    @FXML
+    void searchInputUpdate(KeyEvent event) {
+        //  Calls an instance of ListOfItems to utilize functions within that method
+        ListOfItems helper = new ListOfItems();
+        //  Gets the information from within the search box everytime the user types in it
+        String search = searchInput.getText();
+
+        //  If the search box is empty, the list will just show everything
+        if(search.isEmpty()){
+            inventoryTable.setItems(inventoryList);
+        } else{ //  If there is something in the box, the list will get updated
+            ObservableList<Item> filteredList = helper.searchItems(inventoryList, search);
+            inventoryTable.setItems(filteredList);
+        }
+
     }
 
     @FXML
@@ -212,13 +221,6 @@ public class InventoryListSceneController implements Initializable {
         //  If the file selected was null
         //      Depending on which was chosen, it will choose the corresponding method in the instance of ListOfItems
         //      to save the file appropriately
-    }
-
-    @FXML
-    void searchItemPressed(ActionEvent event) {
-        //  Calls an instance of ListOfItems to utilize functions within that method
-        //  Gets whatever is in the input field and passes it to a function in the instance of ListOfItems
-        //  Will update the list to show those items
     }
 
     //  Functions to set elements within this controller
