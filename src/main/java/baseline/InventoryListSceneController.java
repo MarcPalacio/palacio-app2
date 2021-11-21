@@ -19,8 +19,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -101,8 +102,10 @@ public class InventoryListSceneController implements Initializable {
     void addItemPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+
         //  Gets the controller information of the error message scene in case the user makes an error
         ErrorMessageSceneController error = errorController.getController();
+
         //  Creates string to check
         StringBuilder errorMessage = new StringBuilder();
 
@@ -135,8 +138,10 @@ public class InventoryListSceneController implements Initializable {
     void deleteInventoryPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+
         //  Calls method in ListOfItems to clear list
         helper.deleteAllItems(inventoryList);
+
         //  Refreshes the table
         inventoryTable.refresh();
     }
@@ -145,12 +150,14 @@ public class InventoryListSceneController implements Initializable {
     void deleteItemPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+
         //  Gets the controller information of the error message scene in case the user makes an error
         ErrorMessageSceneController error = errorController.getController();
 
         try{
             //  Gets an index from the selected element in the table
             int index = inventoryList.indexOf(inventoryTable.getSelectionModel().getSelectedItem());
+
             //  Calls method in ListOfItems to delete item
             helper.deleteItemInList(inventoryList, index);
             inventoryTable.refresh();
@@ -190,6 +197,7 @@ public class InventoryListSceneController implements Initializable {
     void searchInputUpdate(KeyEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
         ListOfItems helper = new ListOfItems();
+
         //  Gets the information from within the search box everytime the user types in it
         String search = searchInput.getText();
 
@@ -206,25 +214,52 @@ public class InventoryListSceneController implements Initializable {
     @FXML
     void loadInventoryPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
+        ListOfItems helper = new ListOfItems();
+
         //  Uses a FileChooser to get the file that it is choosing to load from (With an initial directory as well as
         //  the selectable files)
-        //  If the file selected was null
-        //      Depending on which was chosen, it will choose the corresponding method in the instance of ListOfItems
-        //      to load the file
+        FileChooser fc = new FileChooser();
+        fc.setInitialDirectory(new File("docs\\"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html"));
+        File selectedFile = fc.showOpenDialog(null);
+
+        String extension = getExtension(selectedFile);
+
+        //  Checks if the file isn't null
+        if(selectedFile != null){
+            // It wipes the current list so that the two lists don't get mixed up
+            helper.deleteAllItems(inventoryList);
+            //  Calls the loadSaveFile function which adds the new elements to the list, while passing what type of file it is
+            //  So it knows which function to call
+            helper.loadSaveFile(inventoryList, selectedFile, extension);
+        }
     }
 
     @FXML
     void saveInventoryPressed(ActionEvent event) {
         //  Calls an instance of ListOfItems to utilize functions within that method
-        //  Uses a FileChooser to save the file (With an initial directory as well as
+        ListOfItems helper = new ListOfItems();
+
+        //  Uses a FileChooser to get the file that it is choosing to load from (With an initial directory as well as
         //  the selectable files)
-        //  If the file selected was null
-        //      Depending on which was chosen, it will choose the corresponding method in the instance of ListOfItems
-        //      to save the file appropriately
+        FileChooser fc = new FileChooser();
+        fc.setInitialDirectory(new File("docs\\"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html"));
+        File selectedFile = fc.showSaveDialog(null);
+
+        String extension = getExtension(selectedFile);
+
+        if(selectedFile != null){
+            //  Calls the saveListFile function which will save the list to the corresponding file type
+            helper.saveListFile(inventoryList, selectedFile, extension);
+        }
     }
 
-    //  Functions to set elements within this controller
-    void setItemList(ObservableList<Item> item){
-        //  Sets this list to a list from the outside
+    //  Other functions to help
+    private String getExtension(File file){
+        String fileName = file.getName();
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

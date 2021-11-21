@@ -55,7 +55,8 @@ public class ListOfItems {
         //  If the serial is invalid
         if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
             //  Return that the serial invalid
-            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. ");
+            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. Where A" +
+                    " is a capital letter and X is a digit or capital letter. ");
         }
 
         //  Else
@@ -69,10 +70,10 @@ public class ListOfItems {
     }
 
     public String editItemInList(Item editItem, String name, String price, String serial){
+        //  Returns a string depending on if an item is added to the list or not
         StringBuilder output = new StringBuilder();
         DecimalFormat df = new DecimalFormat("0.00");
         String priceString = "";
-        //  Returns a string depending on if an item is edited or not
 
         //  If the item's price is invalid (Either less than 0 or contains characters)
         try{
@@ -98,7 +99,8 @@ public class ListOfItems {
         //  If the serial is invalid
         if(!(Pattern.matches("[A-Z][-][\\dA-Z]{3}[-][\\dA-Z]{3}[-][\\dA-Z]{3}", serial))){
             //  Return that the serial invalid
-            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. ");
+            output.append("The serial number is invalid. Please ensure that the format is A-XXX-XXX-XXX. Where A" +
+                    " is a capital letter and X is a digit or capital letter. ");
         }
 
         //  Else
@@ -124,6 +126,7 @@ public class ListOfItems {
     }
 
     public ObservableList<Item> searchItems(ObservableList<Item> list, String search){
+        //  Creates a list that will be set to the table later
         ObservableList<Item> filteredList = FXCollections.observableArrayList();
 
         for(int i = 0; i < list.size(); i++){
@@ -133,6 +136,8 @@ public class ListOfItems {
             //  This if statement will ignore the case values
             if(Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE).matcher(name).find() ||
                     Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE).matcher(serial).find()){
+                //  If the text inside the search bar matches either the name or serial in some way, it will be
+                //  added to the list
                 filteredList.add(list.get(i));
             }
         }
@@ -140,32 +145,71 @@ public class ListOfItems {
         return filteredList;
     }
 
-    public void saveListFile(ObservableList<Item> list, File outputFile){
+    public void saveListFile(ObservableList<Item> list, File outputFile, String type){
         //  Figures out which file format was chosen then uses function from MyFileWriter to write the file
         //  Note: Alternative would be to add buttons to save each file accordingly
+        MyFileWriter fw = new MyFileWriter();
+
+        if(type.equals("txt")){
+            //  Calls writeSaveFileTSV to write the file in a TSV format
+            String save = writeSaveFileTSV(list);
+            fw.writeToFile(save, outputFile);
+        } else if(type.equals("html")){
+            //  Calls writeSaveFileHTML to write the file in a HTML format
+            String save = writeSaveFileHTML(list);
+            fw.writeToFile(save, outputFile);
+        }
     }
 
-    public void loadSaveFile(ObservableList<Item> list){
-        //  Reads in the file and determines which methods to use to read in the file
-        //  Calls methods from MyFileReader
-        //  Note: Alternative would be to add buttons to load each file accordingly
-    }
-
-    public String writeSaveFileTSV(ObservableList<Item> list){
+    private String writeSaveFileTSV(ObservableList<Item> list){
         //  Takes each item and stores them into a TSV
         //  Returns the string
-        return "";
+        StringBuilder output = new StringBuilder();
+
+        //  Creates header of the TSV file
+        output.append("Serial Number\tName\tValue\n");
+        for(int i = 0; i < list.size(); i++){
+            //  Adds each item to the output with a tab between them
+            output.append(list.get(i).getSerial() + "\t"
+                    + list.get(i).getName() + "\t"
+                    + list.get(i).getPrice());
+            if(i < list.size()-1){  //  Adds space without that extra space at the end
+                output.append("\n");
+            }
+        }
+
+        return output.toString();
     }
 
     public String writeSaveFileHTML(ObservableList<Item> list){
         //  Takes each item and stores them into an HTML file
         //  Returns the string to print on the file
-        return "";
+        StringBuilder output = new StringBuilder();
+
+        //  Creates beginning of the HTML file
+        output.append("<html>\n\t<table>\n\t\t<tr>\n\t\t\t<th>Name</th>\n\t\t\t<th>Price</th>\n\t\t\t<th>Serial Number</th>\n\t\t</tr>");
+        for(int i = 0; i < list.size(); i++){
+            //  Adds each item in HTML format (within a table)
+            output.append("\n\t\t<tr>");
+            output.append("\n\t\t\t<th>" + list.get(i).getName() + "</th>");
+            output.append("\n\t\t\t<th>" + list.get(i).getPrice() + "</th>");
+            output.append("\n\t\t\t<th>" + list.get(i).getSerial() + "</th>");
+            output.append("\n\t\t</tr>");
+        }
+        output.append("\n\t</table>\n</html>");
+        return output.toString();
     }
 
-    public String writeSaveFileJSON(ObservableList<Item> list){
-        //  Takes each item and creates a JSON string
-        return "";
+    public void loadSaveFile(ObservableList<Item> list, File inputFile, String type){
+        //  Reads in the file and determines which methods to use to read in the file
+        //  Calls methods from MyFileReader
+        //  Note: Alternative would be to add buttons to load each file accordingly
+        MyFileReader fr = new MyFileReader();
+        if(type.equals("txt")){
+            fr.scanInputFileTSV(list, inputFile);
+        } else if(type.equals("html")){
+            fr.scanInputFileHTML(list, inputFile);
+        }
     }
 
     private boolean doesAlreadyExist(ObservableList<Item> list, String serial){
