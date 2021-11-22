@@ -1,0 +1,152 @@
+@startuml
+class InventoryManagementApplication extends Application {
+    'Methods
+    +main(String)
+    +start(Stage)
+}
+
+class Item {
+    'Attributes
+    -String name;
+    -String price;
+    -String serial;
+
+    'Methods
+    'Constructor
+    +Item(String, String, String)
+    'Setters
+    +setName(String)
+    +setPrice(String)
+    +setSerial(String)
+    'Getters
+    +getName(): String output
+    +getPrice(): String output
+    +getSerial(): String output
+}
+
+class ListOfItems {
+    'Methods
+    +addItemToList(ObservableList<Item>, String, String, String): String output
+    +editItemInList(Item, String, String, String): String output
+    +deleteItemInList(ObservableList<Item>, int)
+    +deleteAllItems(ObservableList<Item>)
+    +searchItems(ObservableList<Item>, String): ObservableList<Item> output
+    +saveListFile(ObservableList<Item>, File, String)
+    -writeSaveFileTSV(ObservableList<Item>)
+    -writeSaveFileHTML(ObservableList<Item>)
+    +loadSaveFile(ObservableList<Item>, File, String)
+    -doesAlreadyExist(ObservableList<Item>, String): boolean output
+}
+
+class MyFileReader{
+    'Methods
+    +scanInputFileTSV(ObservableList<Item>, File)
+    +scanInputFileHTML(ObservableList<Item>, File)
+}
+
+class MyFileWriter{
+    'Methods
+    +writeToFile(String, File)
+}
+
+class ErrorMessageSceneController{
+    'FXML Elements
+    -goBackButton: Button
+    -labelError: label
+
+    'Attributes
+    -inventoryScene: Scene
+
+    'Methods
+    +goInventoryScene(ActionEvent)
+    +goBackButtonPressed(ActionEvent)
+    +setLabelError(String)
+}
+
+class EditItemSceneController{
+    'FXML Elements
+    -cancelEditButton: Button
+    -editInputName: TextField
+    -editInputPrice: TextField
+    -editInputSerial: TextField
+    -editItemButton: Button
+
+    'Attributes
+    +inventoryList: ObservableList<Item>
+    -index: int
+    -inventoryScene: Scene
+    -errorScene: Scene
+    -inventoryController: FXMLLoader
+    -errorController: FXMLLoader
+
+    'Methods
+    +setInventoryScene(Scene)
+    +setErrorScene(Scene)
+    +goInventoryScene(ActionEvent)
+    +goErrorScene(ActionEvent)
+    +getErrorController(FXMLLoader)
+    +getInventoryController(FXMLLoader)
+    +cancelEditButton(ActionEvent)
+    +editItemButtonPressed(ActionEvent)
+    +setTextInputs(String, String, String)
+    +setItemList(ObservableList<Item>)
+    +setIndex(int)
+}
+
+class InventoryListSceneController implements Initializable{
+    'FXML Elements
+    -addInputName: TextField
+    -addInputPrice: TextField
+    -addInputSerial: TextField
+    -addItemButton: Button
+    -deleteInventoryButton: Button
+    -deleteItemButton: Button
+    -editItemButton: Button
+    -inventoryTable: TableView<Item>
+    -loadInventoryButton: Button
+    -nameColumn: TableColumn<Item, String>
+    -priceColumn: TableColumn<Item, String>
+    -serialColumn: TableColumn<Item, String>
+    -saveInventoryButton: Button
+    -searchInput: TextField
+
+    'Attributes
+    +inventoryList: ObservableList<Item>
+    -errorScene: Scene
+    -editScene: editScene
+    -errorController: FXMLLoader
+    -editController: FXMLLoader
+
+    'Methods
+    +initialize(URL, ResourceBundle)
+    +setErrorScene(Scene)
+    +setEditScene(Scene)
+    +goErrorScene(ActionEvent)
+    +goEditScene(ActionEvent)
+    +getErrorController(FXMLLoader)
+    +getEditController(FXMLLoader)
+    +addItemPressed(ActionEvent)
+    +deleteInventoryPressed(ActionEvent)
+    +deleteItemPressed(ActionEvent)
+    +editItemPressed(ActionEvent)
+    +searchInputUpdate(KeyEvent)
+    +loadInventoryPressed(ActionEvent)
+    +saveInventoryPressed(ActionEvent)
+    -getExtension(File): String
+}
+
+InventoryManagementApplication -- InventoryListSceneController
+InventoryManagementApplication -- EditItemSceneController
+InventoryManagementApplication -- ErrorMessageSceneController
+InventoryListSceneController -- ErrorMessageSceneController
+InventoryListSceneController -- EditItemSceneController
+EditItemSceneController -- ErrorMessageSceneController
+
+InventoryListSceneController -- ListOfItems
+EditItemSceneController -- ListOfItems
+
+
+ListOfItems -- Item
+ListOfItems -- MyFileReader
+ListOfItems -- MyFileWriter
+@enduml

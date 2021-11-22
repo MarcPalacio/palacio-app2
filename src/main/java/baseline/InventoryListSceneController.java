@@ -37,10 +37,11 @@ public class InventoryListSceneController implements Initializable {
     @FXML private TableView<Item> inventoryTable;
     @FXML private Button loadInventoryButton;
     @FXML private TableColumn<Item, String> nameColumn;
-    @FXML private TableColumn<Item, Double> priceColumn;
+    @FXML private TableColumn<Item, String> priceColumn;
+    @FXML private TableColumn<Item, String> serialColumn;
     @FXML private Button saveInventoryButton;
     @FXML private TextField searchInput;
-    @FXML private TableColumn<Item, String> serialColumn;
+
 
     //  Attributes
     ObservableList<Item> inventoryList = FXCollections.observableArrayList();

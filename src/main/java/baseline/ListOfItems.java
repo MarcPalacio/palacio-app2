@@ -181,7 +181,7 @@ public class ListOfItems {
         return output.toString();
     }
 
-    public String writeSaveFileHTML(ObservableList<Item> list){
+    private String writeSaveFileHTML(ObservableList<Item> list){
         //  Takes each item and stores them into an HTML file
         //  Returns the string to print on the file
         StringBuilder output = new StringBuilder();

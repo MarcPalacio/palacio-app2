@@ -47,9 +47,4 @@ public class Item {
         //  Returns serial of the item
         return serial;
     }
-
-    public String toTSVFormat(){
-        //  Returns a string of the item in TSV format
-        return "";
-    }
 }
