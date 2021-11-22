@@ -1,0 +1,4 @@
+Serial Number	Name	Value
+P-123-123-123	Potatos	$2.50
+C-123-123-123	Carrots	$2.50
+R-123-123-123	Rice	$4.50

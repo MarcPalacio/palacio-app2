@@ -161,7 +161,7 @@ public class ListOfItems {
         }
     }
 
-    private String writeSaveFileTSV(ObservableList<Item> list){
+    public String writeSaveFileTSV(ObservableList<Item> list){
         //  Takes each item and stores them into a TSV
         //  Returns the string
         StringBuilder output = new StringBuilder();
@@ -181,7 +181,7 @@ public class ListOfItems {
         return output.toString();
     }
 
-    private String writeSaveFileHTML(ObservableList<Item> list){
+    public String writeSaveFileHTML(ObservableList<Item> list){
         //  Takes each item and stores them into an HTML file
         //  Returns the string to print on the file
         StringBuilder output = new StringBuilder();
